@@ -1,0 +1,201 @@
+
+1. 
+	API: Get account details:
+	Method: GET
+	URL: /api/account
+	Headers: 
+		- address: <"Nem account address">
+		- Content-Type: "application/json"
+	Params: None
+
+2. 
+	API: Get heartbeat details:
+	Method: GET
+	URL: /api/heartbeat
+	Headers: 
+		- address: <"Nem account address">
+		- Content-Type: "application/json"
+	Params: None
+
+
+3.
+	API: Get heartbeat details:
+	Method: GET
+	URL: /api/account/status
+	Headers: 
+		- address: <"Nem account address">
+		- Content-Type: "application/json"
+	Params: None
+
+
+4.
+	API: Get Create namespace:
+	Method: POST
+	URL: /api/namespace
+	Headers: 
+		- address: <"Nem account address">
+		- Content-Type: "application/json"
+	Params: {
+	            "transaction":
+	            {
+	                "signer": <Public key of signer>,
+	                "rentalFeeSink": <Address of rental sink for namespace>,
+	                "newPart": <Name of sub-namespace>,
+	                "parent": <Name of Parent namespace>
+	            },
+	            "privateKey": <Private key>
+			}
+	Note: If you wants to create a new namespace(Parent), then leave Parent as None. By providing 'parent' value, new sub- namespace is created under 'parent'.
+
+
+5. 
+	API: Get Create Mosaic:
+	Method: POST
+	URL: /api/mosaic
+	Headers: 
+		- address: <"Nem account address">
+		- Content-Type: "application/json"
+	Params: {
+		        "transaction":
+		        {
+		            "signer": "Account's public key",
+		            "creationFeeSink": "Account's Address",
+		            "mosaicDefinition": {
+		                "creator": "Account's public key",
+		                "description": "Mosaic description",
+		                "id": {
+		                    "namespaceId": "namespaceparent.namespacechild",
+		                    "name": "mosaic name"
+		                },
+		                "properties": [{
+		                    "name": "divisibility",
+		                    "value": "0"
+		                },{
+		                    "name": "initialSupply",
+		                    "value": "1000"
+		                },{
+		                    "name": "supplyMutable",
+		                    "value": "true"
+		                },{
+		                    "name": "transferable",
+		                    "value": "false"
+		                }
+		            ]
+		            }
+		        },
+		        "privateKey": "Account's privateKey"
+		}
+	
+6. 
+	API: Api to convert an account into Multisign account:
+	Method: POST
+	URL: /api/multisign
+	Headers: 
+		- Content-Type: "application/json"
+	Params:  
+		{
+	        "transaction":
+	        {
+	            "signer": "Account's public key, which you wants to convert into multisign account",
+	            "modifications": [
+	                {
+	                    "modificationType": 1,
+	                    "cosignatoryAccount": "Public key of cosignatoryAccount"
+	                },{
+	                    "modificationType": 1,
+	                    "cosignatoryAccount": "Public key of cosignatoryAccount"
+	                }
+	            ],
+	            "minCosignatories" : {
+	                "relativeChange": 2
+	            }
+	        },
+	        "privateKey": "Account's private key"
+	    }
+
+
+7. 
+
+	API: Api to initiate transfer from Multisign account:
+	Method: POST
+	URL: /api/multisign/transfer
+	Headers: 
+		- Content-Type: "application/json"
+	Params:  
+		{
+	        "transaction":
+	        {
+	            "signer": "Public key of initiator transaction",
+	            "otherTrans": {
+	                "amount": "amount to transfer",
+	                "recipient": "Address of person, who will get this amount",
+	                "message":
+	                {
+	                    "payload": "",
+	                    "type": 1
+	                },
+	                "signer": "Public key of multisign account"
+	            },
+	            "signatures":[
+	            ]
+	        },
+	        "privateKey": "Private key of the transaction initiator"
+        }
+
+8.
+
+	API: Api to sign transfer and confirm it for multisign account.
+	Method: POST
+	URL: /api/multisign/cosigning_transaction
+	Headers: 
+		- Content-Type: "application/json"
+	Params:  
+		{
+	        "transaction":
+	        {
+	            "signer": "Account's public key",
+	            "otherHash": {
+	                "data": "The hash of the inner transaction of the corresponding multisig transaction."
+	            },
+	            "otherAccount": "The address of the corresponding multisig account."
+	        },
+	        "privateKey": "Account's private key"
+        }
+
+
+9.
+
+	API: Api to transfer mosaic
+	Method: POST
+	URL: /api/mosaic_transaction
+	Headers: 
+		- Content-Type: "application/json"
+	Params:  
+		{
+        	"transaction":
+	        {
+	            "amount": Amount to transfer,
+	            "recipient": "Address of recipient",
+	            "message":
+	            {
+	                "payload": "",
+	                "type": 1
+	            },
+	            "signer": "Account's Public key",
+	            "mosaics":[{
+	                "mosaicId":{
+	                    "namespaceId": "Namespace",
+	                    "name": "mosaic name"
+	                },
+	                "quantity": 1
+	            },{
+	                "mosaicId":{
+	                    "namespaceId": "nem",
+	                    "name": "xem"
+	                },
+	                "quantity": Quantity of the mosaic
+	            }]
+	        },
+	        "privateKey": "Account's private key"
+		}
+		
